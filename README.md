@@ -5,8 +5,8 @@
 </p>
 
 <p align="center" style="display: flex;">
-    <img height=300 width="400" align="center" src="https://github-readme-stats.vercel.app/api?username=hkyss&rank_icon=percentile&include_all_commits=true" />
-    <img height=300 width="400" align="center" src="https://github-readme-stats.vercel.app/api/top-langs/?username=hkyss&layout=compact&langs_count=8" />
+    <img height=200 width="400" align="center" src="https://github-readme-stats.vercel.app/api?username=hkyss&rank_icon=percentile&include_all_commits=true" />
+    <img height=200 width="400" align="center" src="https://github-readme-stats.vercel.app/api/top-langs/?username=hkyss&layout=compact&langs_count=8" />
 </p>
 
 ### Languages
@@ -18,8 +18,12 @@
 [![Bash](https://img.shields.io/badge/bash-black?style=for-the-badge&logo=gnu-bash&logoColor=white)](https://t.me/b3295cb57cef103c376a80bf123e6cd)
 
 ### Technologies & Frameworks
-[![MODX](https://img.shields.io/badge/modx-black?style=for-the-badge&logo=modx)](https://t.me/b3295cb57cef103c376a80bf123e6cd)
+[![EvolutionCMS](https://img.shields.io/badge/modx-black?style=for-the-badge&logo=modx)](https://t.me/b3295cb57cef103c376a80bf123e6cd)
 [![Laravel](https://img.shields.io/badge/laravel-black?style=for-the-badge&logo=laravel)](https://t.me/b3295cb57cef103c376a80bf123e6cd)
-[![Symfony](https://img.shields.io/badge/symfony-black?style=for-the-badge&logo=symfony)](https://t.me/b3295cb57cef103c376a80bf123e6cd)
 [![MySQL](https://img.shields.io/badge/mysql-black?style=for-the-badge&logo=mysql)](https://t.me/b3295cb57cef103c376a80bf123e6cd)
 [![Docker](https://img.shields.io/badge/docker-black?style=for-the-badge&logo=rabbitmq)](https://t.me/b3295cb57cef103c376a80bf123e6cd)
+[![Git](https://img.shields.io/badge/git-black?style=for-the-badge&logo=rabbitmq)](https://t.me/b3295cb57cef103c376a80bf123e6cd)
+
+<p align="center">
+    Designed by <a href="https://github.com/AgelxNash">AgelxNash</a>
+</p>
