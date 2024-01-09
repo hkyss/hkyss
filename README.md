@@ -4,7 +4,7 @@
     <a href="https://t.me/b3295cb57cef103c376a80bf123e6cd"><img src="https://img.shields.io/badge/Telegram-@b3295cb57cef103c376a80bf123e6cd-blue?logo=gmail&logoColor=white&style=flat-square" alt="Telegram"></a>
 </p>
 
-<p align="center">
+<p align="center" style="display: flex;">
     <img height=200 align="center" src="https://github-readme-stats.vercel.app/api?username=hkyss&rank_icon=percentile&include_all_commits=true" />
     <img height=200 align="center" src="https://github-readme-stats.vercel.app/api/top-langs/?username=hkyss&layout=compact&langs_count=8&card_width=320" />
 </p>
