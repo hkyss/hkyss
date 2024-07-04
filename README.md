@@ -18,7 +18,3 @@
 [![MySQL](https://img.shields.io/badge/mysql-black?style=for-the-badge&logo=mysql)](https://t.me/b3295cb57cef103c376a80bf123e6cd)
 [![Docker](https://img.shields.io/badge/docker-black?style=for-the-badge&logo=rabbitmq)](https://t.me/b3295cb57cef103c376a80bf123e6cd)
 [![Git](https://img.shields.io/badge/git-black?style=for-the-badge&logo=rabbitmq)](https://t.me/b3295cb57cef103c376a80bf123e6cd)
-
-<p align="center">
-    Designed by <a href="https://github.com/AgelxNash">AgelxNash</a>
-</p>
