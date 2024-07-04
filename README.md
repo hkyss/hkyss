@@ -4,11 +4,6 @@
     <a href="https://t.me/b3295cb57cef103c376a80bf123e6cd"><img src="https://img.shields.io/badge/Telegram-@b3295cb57cef103c376a80bf123e6cd-blue?logo=gmail&logoColor=white&style=flat-square" alt="Telegram"></a>
 </p>
 
-<p align="center">
-    <img height=200 width="400" align="center" src="https://github-readme-stats.vercel.app/api?username=hkyss&rank_icon=percentile&include_all_commits=true" />
-    <img height=200 width="400" align="center" src="https://github-readme-stats.vercel.app/api/top-langs/?username=hkyss&layout=compact&langs_count=8" />
-</p>
-
 ### Languages
 [![HTML](https://img.shields.io/badge/html5-black?style=for-the-badge&logo=html5)](https://t.me/b3295cb57cef103c376a80bf123e6cd)
 [![CSS](https://img.shields.io/badge/css3-black?style=for-the-badge&logo=css3)](https://t.me/b3295cb57cef103c376a80bf123e6cd)
