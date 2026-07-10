@@ -20,8 +20,8 @@
 <br>
 <br>
 
-<img width="372" src="https://github-readme-stats-git-master-rickstaa.vercel.app/api?username=hkyss&show_icons=true&hide_border=true&hide_title=true&hide_rank=true&theme=dark&bg_color=0d1117&title_color=ffffff&icon_color=ffffff&text_color=8b8b8b">
-<img width="372" src="https://github-readme-stats-git-master-rickstaa.vercel.app/api/top-langs/?username=hkyss&layout=compact&langs_count=6&hide_border=true&hide_title=true&theme=dark&bg_color=0d1117&title_color=ffffff&text_color=8b8b8b">
+<img height="165" src="https://github-readme-stats-git-master-rickstaa.vercel.app/api?username=hkyss&show_icons=true&hide_border=true&hide_title=true&hide_rank=true&theme=dark&bg_color=0d1117&title_color=ffffff&icon_color=ffffff&text_color=8b8b8b">
+<img height="165" src="https://github-readme-stats-git-master-rickstaa.vercel.app/api/top-langs/?username=hkyss&layout=compact&langs_count=8&hide_border=true&hide_title=true&theme=dark&bg_color=0d1117&title_color=ffffff&text_color=8b8b8b">
 
 <br>
 
