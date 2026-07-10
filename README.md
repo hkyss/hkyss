@@ -20,7 +20,7 @@
 <br>
 <br>
 
-<table>
+<table align="center" border="0" cellspacing="0" cellpadding="8" width="760">
 <tr>
 <td align="center" valign="top" width="380">
 <img width="100%" src="https://github-readme-stats-git-master-rickstaa.vercel.app/api?username=hkyss&show_icons=true&hide_border=true&hide_title=true&hide_rank=true&theme=dark&bg_color=0d1117&title_color=ffffff&icon_color=ffffff&text_color=8b8b8b">
@@ -29,10 +29,11 @@
 <img width="100%" src="https://github-readme-stats-git-master-rickstaa.vercel.app/api/top-langs/?username=hkyss&layout=compact&langs_count=8&hide_border=true&hide_title=true&theme=dark&bg_color=0d1117&title_color=ffffff&text_color=8b8b8b">
 </td>
 </tr>
+<tr>
+<td align="center" valign="top" colspan="2">
+<img width="100%" src="https://github-readme-streak-stats.herokuapp.com/?user=hkyss&hide_border=true&background=0d1117&stroke=0d1117&ring=ffffff&fire=ffffff&currStreakLabel=ffffff&sideLabels=8b8b8b&currStreakNum=ffffff&sideNums=8b8b8b&dates=8b8b8b">
+</td>
+</tr>
 </table>
-
-<br>
-
-<img width="760" src="https://github-readme-streak-stats.herokuapp.com/?user=hkyss&hide_border=true&background=0d1117&stroke=0d1117&ring=ffffff&fire=ffffff&currStreakLabel=ffffff&sideLabels=8b8b8b&currStreakNum=ffffff&sideNums=8b8b8b&dates=8b8b8b">
 
 </div>
