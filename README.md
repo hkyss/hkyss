@@ -14,16 +14,17 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hkyss/hkyss/output/github-contribution-grid-snake-dark.svg">
-  <img alt="contribution graph" src="https://raw.githubusercontent.com/hkyss/hkyss/output/github-contribution-grid-snake.svg">
+  <img alt="contribution graph" width="760" src="https://raw.githubusercontent.com/hkyss/hkyss/output/github-contribution-grid-snake.svg">
 </picture>
 
 <br>
+<br>
 
-<img src="https://github-readme-stats-git-master-rickstaa.vercel.app/api?username=hkyss&show_icons=true&hide_border=true&hide_title=true&theme=dark&bg_color=0d1117&title_color=ffffff&icon_color=ffffff&text_color=8b8b8b" height="165">
-<img src="https://github-readme-stats-git-master-rickstaa.vercel.app/api/top-langs/?username=hkyss&layout=compact&hide_border=true&hide_title=true&theme=dark&bg_color=0d1117&title_color=ffffff&text_color=8b8b8b" height="165">
+<img width="372" src="https://github-readme-stats-git-master-rickstaa.vercel.app/api?username=hkyss&show_icons=true&hide_border=true&hide_title=true&hide_rank=true&theme=dark&bg_color=0d1117&title_color=ffffff&icon_color=ffffff&text_color=8b8b8b">
+<img width="372" src="https://github-readme-stats-git-master-rickstaa.vercel.app/api/top-langs/?username=hkyss&layout=compact&langs_count=6&hide_border=true&hide_title=true&theme=dark&bg_color=0d1117&title_color=ffffff&text_color=8b8b8b">
 
 <br>
 
-<img src="https://github-readme-streak-stats.herokuapp.com/?user=hkyss&hide_border=true&background=0d1117&stroke=0d1117&ring=ffffff&fire=ffffff&currStreakLabel=ffffff&sideLabels=8b8b8b&currStreakNum=ffffff&sideNums=8b8b8b&dates=8b8b8b">
+<img width="760" src="https://github-readme-streak-stats.herokuapp.com/?user=hkyss&hide_border=true&background=0d1117&stroke=0d1117&ring=ffffff&fire=ffffff&currStreakLabel=ffffff&sideLabels=8b8b8b&currStreakNum=ffffff&sideNums=8b8b8b&dates=8b8b8b">
 
 </div>
