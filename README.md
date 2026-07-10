@@ -1,5 +1,29 @@
-<h1 align="center">Hi there, i'm hkyss</h1>
-<p align="center">
-    <a href="mailto:hkyss.work@proton.me"><img src="https://img.shields.io/badge/E--mail-hkyss.work@proton.me-blue?logo=gmail&logoColor=white&style=flat-square" alt="E-mail"></a>
-    <a href="https://t.me/b3295cb57cef103c376a80bf123e6cd"><img src="https://img.shields.io/badge/Telegram-@b3295cb57cef103c376a80bf123e6cd-blue?logo=gmail&logoColor=white&style=flat-square" alt="Telegram"></a>
-</p>
+<div align="center">
+
+# hkyss
+
+<sub>developer</sub>
+
+<br>
+
+[![Email](https://img.shields.io/badge/-hkyss.work%40proton.me-000000?style=flat-square&logo=protonmail&logoColor=white)](mailto:hkyss.work@proton.me)
+[![Telegram](https://img.shields.io/badge/-Telegram-000000?style=flat-square&logo=telegram&logoColor=white)](https://t.me/b3295cb57cef103c376a80bf123e6cd)
+
+<br>
+<br>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hkyss/hkyss/output/github-contribution-grid-snake-dark.svg">
+  <img alt="contribution graph" src="https://raw.githubusercontent.com/hkyss/hkyss/output/github-contribution-grid-snake.svg">
+</picture>
+
+<br>
+
+<img src="https://github-readme-stats.vercel.app/api?username=hkyss&show_icons=true&hide_border=true&hide_title=true&theme=dark&bg_color=00000000&title_color=ffffff&icon_color=ffffff&text_color=8b8b8b" height="165">
+<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=hkyss&layout=compact&hide_border=true&hide_title=true&theme=dark&bg_color=00000000&title_color=ffffff&text_color=8b8b8b" height="165">
+
+<br>
+
+<img src="https://github-readme-streak-stats.herokuapp.com/?user=hkyss&hide_border=true&background=00000000&stroke=00000000&ring=ffffff&fire=ffffff&currStreakLabel=ffffff&sideLabels=8b8b8b&currStreakNum=ffffff&sideNums=8b8b8b&dates=8b8b8b">
+
+</div>
