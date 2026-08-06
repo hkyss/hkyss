@@ -12,10 +12,7 @@
 <br>
 <br>
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/hkyss/hkyss/output/github-contribution-grid-snake-dark.svg">
-  <img alt="contribution graph" width="760" src="https://raw.githubusercontent.com/hkyss/hkyss/output/github-contribution-grid-snake.svg">
-</picture>
+<img alt="contribution graph" width="760" src="https://raw.githubusercontent.com/hkyss/hkyss/output/fallout-terminal.svg">
 
 <br>
 <br>
