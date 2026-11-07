@@ -18,7 +18,7 @@ jobs:
 
       - name: Render terminal
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.STATS_TOKEN || secrets.GITHUB_TOKEN }}
           OWNER: ${{ github.repository_owner }}
         run: python3 scripts/generate_terminal.py --user "$OWNER" --out dist/terminal.svg
 

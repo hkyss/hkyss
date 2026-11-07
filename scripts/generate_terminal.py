@@ -111,7 +111,7 @@ query($login:String!){user(login:$login){
     totalCommitContributions totalPullRequestContributions totalIssueContributions
     contributionCalendar{totalContributions weeks{contributionDays{date contributionCount weekday}}}
   }
-  repositories(first:100,ownerAffiliations:OWNER,isFork:false,privacy:PUBLIC){
+  repositories(first:100,ownerAffiliations:OWNER,isFork:false){
     totalCount
     nodes{stargazerCount languages(first:8,orderBy:{field:SIZE,direction:DESC}){edges{size node{name}}}}
   }
