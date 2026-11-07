@@ -191,11 +191,17 @@ def streaks(days: list[dict]) -> tuple[int, int]:
     return current, longest
 
 
+EXCLUDED_LANGUAGES = {"CSS", "HTML", "Blade", "Twig"}
+
+
 def top_languages(profile: dict, limit: int = 6) -> list[tuple[str, float]]:
     totals: dict[str, int] = {}
     for repo in profile["repositories"]["nodes"]:
         for edge in repo["languages"]["edges"]:
-            totals[edge["node"]["name"]] = totals.get(edge["node"]["name"], 0) + edge["size"]
+            name = edge["node"]["name"]
+            if name in EXCLUDED_LANGUAGES:
+                continue
+            totals[name] = totals.get(name, 0) + edge["size"]
     grand = sum(totals.values())
     if not grand:
         return []
