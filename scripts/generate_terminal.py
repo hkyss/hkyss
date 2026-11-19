@@ -23,13 +23,10 @@ ROWS = 7
 
 TAB_Y = 30
 TAB_LINE_Y = 38
-NAME_Y = 92
-ROLE_Y = 120
-SEC1_Y = 146
-SCAN_HEAD_Y = 168
-MONTH_Y = 188
-GRID_Y = 196
-SCAN_STAT_Y = 312
+GRID_Y = 58
+NAME_Y = 108
+ROLE_Y = 136
+SEC1_Y = 166
 SEC2_Y = 326
 DIAG_HEAD_Y = 348
 ROW_Y = 374
@@ -53,9 +50,6 @@ RESET_AT = 90.0
 RESTORE_FROM = 90.0
 RESTORE_SPAN = 6.0
 RESTORE_RISE = 3.0
-
-MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN",
-          "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
 
 FONT = "ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,'Courier New',monospace"
 ADVANCE = 8.2
@@ -380,18 +374,6 @@ def archive(width: float, cal: dict) -> tuple[str, str, str]:
                   f"hero-fade {DURATION} linear infinite}}"
                   "#beam{animation:beam 7s linear infinite}")
 
-    months = []
-    last_month, last_col = None, -9
-    for col in range(cols):
-        day = next((grid[(r, col)] for r in range(ROWS) if (r, col) in grid), None)
-        if not day:
-            continue
-        month = int(day["date"][5:7])
-        text, x = MONTHS[month - 1], cx(col)
-        if month != last_month and col - last_col >= 3 and x + run_width(text, 9) <= width - PAD:
-            months.append(label(text, x, MONTH_Y, DIM, size=9))
-            last_month, last_col = month, col
-
     def legs(sign: int, pairs: tuple[int, ...]) -> str:
         shapes = {
             0: "M{a}3.4 -3 L{a}7.4 -6.2 L{a}8.6 -9.6",
@@ -416,17 +398,11 @@ def archive(width: float, cal: dict) -> tuple[str, str, str]:
         f'</g>'
     )
 
-    dates = sorted(d["date"] for d in days)
-    current, longest = streaks(days)
-
     body = (
-        heading(width, SCAN_HEAD_Y, "> ARCHIVE :: CONTRIBUTION SCAN", f"{dates[0]} / {dates[-1]}")
-        + "".join(months)
-        + f'<g clip-path="url(#gridClip)">{"".join(rects)}'
+        f'<g opacity=".38"><g clip-path="url(#gridClip)">{"".join(rects)}'
         + f'<rect id="beam" x="{grid_x - 4}" y="{GRID_Y - 4}" width="{grid_w + 8}" height="26"'
         + f' fill="url(#beamGrad)" opacity=".16"/></g>'
-        + hero
-        + right(f"STREAK {current} :: MAX {longest}", width - PAD, SCAN_STAT_Y, FRAME)
+        + hero + "</g>"
     )
     defs = (
         f'<radialGradient id="lamp"><stop offset="0" stop-color="{FRAME}" stop-opacity=".38"/>'
@@ -494,19 +470,13 @@ def diagnostic(width: float, profile: dict | None) -> tuple[str, str]:
 
 
 def stand_by(width: float) -> str:
-    cx, cy = width / 2 + 10, NAME_Y - 12
-    r_out, r_ray, r_mid, r_in = 300, 236, 170, 96
-    wedges = []
-    for i in range(0, 72, 2):
-        a0, a1 = math.radians(i * 5), math.radians(i * 5 + 5)
-        pts = [(r_ray, a0), (r_out - 8, a0), (r_out - 8, a1), (r_ray, a1)]
-        wedges.append("M" + " L".join(f"{cx + rad * math.sin(a):.1f} {cy - rad * math.cos(a):.1f}"
-                                      for rad, a in pts) + " Z")
+    cx, cy = width / 2, (SEC1_Y + SEC2_Y) / 2
+    r_mid, r_in = 170, 96
     corners = "".join(
         f'<circle cx="{cx + dx}" cy="{cy + dy}" r="34" fill="none" stroke="{FRAME}" stroke-width="2"/>'
         f'<path d="M{cx + dx - 34} {cy + dy} H{cx + dx + 34} M{cx + dx} {cy + dy - 34} V{cy + dy + 34}"'
         f' stroke="{FRAME}" stroke-width="1"/>'
-        for dx in (-(width / 2 - 90), width / 2 - 110) for dy in (HEIGHT - cy - 120,)
+        for dx in (-(width / 2 - 90), width / 2 - 110) for dy in (HEIGHT - 120 - cy,)
     )
     def star(x: float, y: float, rad: float) -> str:
         pts = []
@@ -537,9 +507,6 @@ def stand_by(width: float) -> str:
     return (
         '<g id="standby" opacity=".06">'
         f'<path d="M0 {cy} H{width} M{cx} 0 V{HEIGHT}" stroke="{FRAME}" stroke-width="1.2"/>'
-        f'<circle cx="{cx}" cy="{cy}" r="{r_out}" fill="none" stroke="{FRAME}" stroke-width="4"/>'
-        f'<path d="{" ".join(wedges)}" fill="{FRAME}"/>'
-        f'<circle cx="{cx}" cy="{cy}" r="{r_ray}" fill="none" stroke="{FRAME}" stroke-width="2.5"/>'
         f'<circle cx="{cx}" cy="{cy}" r="{r_mid}" fill="none" stroke="{FRAME}" stroke-width="2"/>'
         f'<circle cx="{cx}" cy="{cy}" r="{r_in}" fill="none" stroke="{FRAME}" stroke-width="2"/>'
         f'{corners}'
@@ -562,8 +529,8 @@ def render(user: str, profile: dict | None, cal: dict) -> str:
     diag_body, diag_defs = diagnostic(width, profile)
 
     body = "".join([
-        ident_body, rule(width, SEC1_Y),
-        scan_body, rule(width, SEC2_Y),
+        scan_body, ident_body, rule(width, SEC1_Y),
+        rule(width, SEC2_Y),
         diag_body,
         status_bar(width, profile, cal),
     ])
