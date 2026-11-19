@@ -69,7 +69,7 @@ BASE_CSS = (
     "46%{opacity:.2;transform:translateX(5px)}47%{opacity:.85;transform:translateX(-3px)}"
     "48%{opacity:.5;transform:translateX(2px)}49%{opacity:1;transform:none}"
     "77%{opacity:0}78%{opacity:.7}79%{opacity:1}100%{opacity:1;transform:none}}"
-    "@keyframes spike{0%,46%{opacity:.2}47%{opacity:.42}49%,78%{opacity:.2}79%{opacity:.34}80%,100%{opacity:.2}}"
+    "@keyframes spike{0%,46%{opacity:.42}47%{opacity:.7}49%,78%{opacity:.42}79%{opacity:.6}80%,100%{opacity:.42}}"
     "@keyframes roll{0%{transform:translateY(-60px)}100%{transform:translateY(" + str(HEIGHT) + "px)}}"
 )
 
@@ -490,77 +490,98 @@ def converge(x0: float, y0: float, x1: float, y1: float, horizontal: bool,
     return " ".join(out)
 
 
+def star_path(x: float, y: float, rad: float) -> str:
+    pts = []
+    for k in range(10):
+        a = math.radians(k * 36)
+        rr = rad if k % 2 == 0 else rad * 0.42
+        pts.append(f"{x + rr * math.sin(a):.1f} {y - rr * math.cos(a):.1f}")
+    return "M" + " L".join(pts) + " Z"
+
+
 def stand_by(width: float) -> str:
     cx, cy = width / 2, (SEC1_Y + SEC2_Y) / 2
-    r_main, r_in = 150, 92
-    reach_x, reach_y = width / 2 - 40, 245
+    r_big, r_seg, r_in = 132, 144, 64
+    f = FRAME
 
-    wedges = " ".join([
-        converge(cx - reach_x, cy, cx - r_main - 8, cy, True, 52, 6),
-        converge(cx + reach_x, cy, cx + r_main + 8, cy, True, 52, 6),
-        converge(cx, cy - reach_y, cx, cy - r_main - 8, False, 52, 6),
-        converge(cx, cy + reach_y, cx, cy + r_main + 8, False, 52, 6),
-    ])
-    ticks = []
-    for n, frac in (("20", 0.1), ("30", 0.45), ("40", 0.8)):
-        off = r_main + 8 + (reach_x - r_main - 8) * (1 - frac)
-        for side in (-1, 1):
-            x = cx + side * off
-            ticks.append(label(n, x - run_width(n, 9) / 2, cy - 34, FRAME, size=9))
+    grid = " ".join([f"M{x} 0 V{HEIGHT}" for x in range(int(cx) % 40, int(width), 40)]
+                    + [f"M0 {y} H{width}" for y in range(int(cy) % 40, HEIGHT, 40)])
 
-    corner_pts = [(cx + dx, cy + dy) for dx in (-(width / 2 - 78), width / 2 - 78) for dy in (-118, 118)]
-    corners = "".join(
-        f'<circle cx="{x:.1f}" cy="{y}" r="34" fill="none" stroke="{FRAME}" stroke-width="2"/>'
-        f'<circle cx="{x:.1f}" cy="{y}" r="22" fill="none" stroke="{FRAME}" stroke-width="1"/>'
-        f'<path d="M{x - 34:.1f} {y} H{x + 34:.1f} M{x:.1f} {y - 34} V{y + 34} '
-        f'{converge(x - 30, y, x + 30, y, True, 24, 2, 7)}"'
-        f' stroke="{FRAME}" stroke-width="1" fill="none"/>'
-        for x, y in corner_pts
+    segments = []
+    for k in range(0, 48, 2):
+        a0, a1 = math.radians(k * 7.5), math.radians(k * 7.5 + 7.5)
+        pts = [(r_big + 2, a0), (r_seg, a0), (r_seg, a1), (r_big + 2, a1)]
+        segments.append("M" + " L".join(f"{cx + r * math.sin(a):.1f} {cy - r * math.cos(a):.1f}"
+                                        for r, a in pts) + " Z")
+
+    def reel(x: float, y: float) -> str:
+        holes = "".join(
+            f'<circle cx="{x + 19 * math.sin(math.radians(a)):.1f}" cy="{y - 19 * math.cos(math.radians(a)):.1f}"'
+            f' r="7" fill="{f}"/>' for a in range(0, 360, 60))
+        return (f'<circle cx="{x:.1f}" cy="{y}" r="34" fill="none" stroke="{f}" stroke-width="3"/>'
+                f'{holes}<circle cx="{x:.1f}" cy="{y}" r="5" fill="{f}"/>')
+
+    reels = "".join(reel(cx + dx, cy + dy)
+                    for dx in (-(width / 2 - 84), width / 2 - 84) for dy in (-60, 60))
+
+    hour = []
+    for k in range(9):
+        t = k / 8 - 0.5
+        hour.append(f"M{cx + t * 70:.1f} {cy - r_in - 4:.1f} L{cx + t * 6:.1f} {cy:.1f}"
+                    f" L{cx + t * 70:.1f} {cy + r_in + 4:.1f}")
+    hatch = " ".join(f"M{cx - r_in + k * 9:.1f} {cy + r_in} L{cx - r_in + k * 9 + r_in:.1f} {cy - r_in}"
+                     for k in range(-4, 16))
+    steps = "".join(
+        f'<rect x="{cx - w / 2:.1f}" y="{cy + r_in + 14 + i * 9}" width="{w}" height="4" fill="{f}"/>'
+        for i, w in enumerate((150, 112, 78, 46, 20)))
+
+    ex, ey = cx, cy - r_big + 34
+    emblem = (
+        f'<circle cx="{ex}" cy="{ey}" r="17" fill="none" stroke="{f}" stroke-width="3"/>'
+        f'<path d="{star_path(ex, ey + 1, 11)}" fill="{f}"/>'
+        f'<path d="M{ex - 62} {ey - 5} H{ex - 22} M{ex - 56} {ey + 1} H{ex - 21} M{ex - 50} {ey + 7} H{ex - 22}'
+        f' M{ex + 62} {ey - 5} H{ex + 22} M{ex + 56} {ey + 1} H{ex + 21} M{ex + 50} {ey + 7} H{ex + 22}"'
+        f' stroke="{f}" stroke-width="3"/>'
     )
 
-    def star(x: float, y: float, rad: float) -> str:
-        pts = []
-        for k in range(10):
-            a = math.radians(k * 36)
-            rr = rad if k % 2 == 0 else rad * 0.42
-            pts.append(f"{x + rr * math.sin(a):.1f} {y - rr * math.cos(a):.1f}")
-        return "M" + " L".join(pts) + " Z"
+    r_star = r_big - 12
+    ring_stars = " ".join(
+        star_path(cx + r_star * math.sin(math.radians(a)), cy - r_star * math.cos(math.radians(a)), 7)
+        for a in (40 + i * 280 / 12 for i in range(13)) if not 150 < a < 210
+    )
 
-    r_star = (r_in + r_main) / 2
-    stars = " ".join(
-        star(cx + r_star * math.sin(math.radians(a)), cy - r_star * math.cos(math.radians(a)), 10)
-        for a in (i * 360 / 13 for i in range(13))
-    )
-    stripe_h = r_in * 2 / 9
-    stripes = "".join(
-        f'<rect x="{cx - r_in}" y="{cy - r_in + stripe_h * k:.1f}" width="{r_in * 2}"'
-        f' height="{stripe_h:.1f}" fill="{FRAME}"/>'
-        for k in range(0, 9, 2)
-    )
-    medallion = (
-        f'<clipPath id="medal"><circle cx="{cx}" cy="{cy}" r="{r_in - 4}"/></clipPath>'
-        f'<g opacity=".1"><path d="{stars}" fill="{FRAME}"/>'
-        f'<g clip-path="url(#medal)">{stripes}</g></g>'
-    )
     text = "PLEASE STAND BY"
-    bw, bh = run_width(text, 30) + 44, 48
+    tw = run_width(text, 30)
+    bw, bh = tw + 92, 50
+    bx, by = cx - bw / 2, cy - bh / 2
+    plate = (
+        f'<rect x="{bx:.1f}" y="{by}" width="{bw:.1f}" height="{bh}" rx="{bh / 2}" fill="{BG}"'
+        f' stroke="{f}" stroke-width="3.5"/>'
+        f'<rect x="{bx + 6:.1f}" y="{by + 6}" width="{bw - 12:.1f}" height="{bh - 12}" rx="{bh / 2 - 6}"'
+        f' fill="none" stroke="{f}" stroke-width="1.2"/>'
+        f'<path d="{star_path(bx + 24, cy, 9)} {star_path(bx + bw - 24, cy, 9)}" fill="{f}"/>'
+        + label(text, cx - tw / 2, cy + 11, f, size=30, weight="700")
+    )
+
     return (
         '<g id="tv">'
-        f'<rect id="roll" width="{width}" height="60" fill="url(#rollGrad)" opacity=".07"/>'
-        '<g id="standby" opacity=".07">'
-        f'<path d="M0 {cy} H{width} M{cx} 0 V{HEIGHT}" stroke="{FRAME}" stroke-width="1.2"/>'
-        f'<path d="{wedges}" stroke="{FRAME}" stroke-width="1.1" fill="none"/>'
-        f'<circle cx="{cx}" cy="{cy}" r="{r_main}" fill="none" stroke="{FRAME}" stroke-width="3"/>'
-        f'<circle cx="{cx}" cy="{cy}" r="{r_in}" fill="none" stroke="{FRAME}" stroke-width="2"/>'
-        f'<circle cx="{cx}" cy="{cy}" r="14" fill="none" stroke="{FRAME}" stroke-width="1.5"/>'
-        f'{corners}{"".join(ticks)}'
+        f'<rect id="roll" width="{width}" height="60" fill="url(#rollGrad)" opacity=".08"/>'
+        f'<path d="{grid}" stroke="{f}" stroke-width="1" opacity=".05"/>'
+        '<g id="standby" opacity=".13">'
+        f'<path d="M0 {cy} H{width} M{cx} 0 V{HEIGHT}" stroke="{f}" stroke-width="1.4"/>'
+        f'<circle cx="{cx}" cy="{cy}" r="{r_big}" fill="{BG}" fill-opacity=".25" stroke="{f}" stroke-width="3"/>'
+        f'<path d="{" ".join(segments)}" fill="{f}"/>'
+        f'<circle cx="{cx}" cy="{cy}" r="{r_seg}" fill="none" stroke="{f}" stroke-width="2"/>'
+        f'{reels}'
+        f'<clipPath id="inner"><circle cx="{cx}" cy="{cy}" r="{r_in}"/></clipPath>'
+        f'<circle cx="{cx}" cy="{cy}" r="{r_in}" fill="none" stroke="{f}" stroke-width="2.5"/>'
+        f'<path d="{hatch}" stroke="{f}" stroke-width="2.5" clip-path="url(#inner)" opacity=".55"/>'
+        f'<path d="{" ".join(hour)}" stroke="{f}" stroke-width="2" fill="none"/>'
+        f'{steps}{emblem}'
+        f'<path d="{ring_stars}" fill="{f}"/>'
         '</g>'
-        + medallion
-        + '<g id="standby-banner" opacity=".2">'
-        f'<rect x="{cx - bw / 2:.1f}" y="{cy - bh / 2}" width="{bw:.1f}" height="{bh}" rx="6"'
-        f' fill="{BG}" fill-opacity=".6" stroke="{FRAME}" stroke-width="3"/>'
-        + label(text, cx - run_width(text, 30) / 2, cy + 11, FRAME, size=30, weight="700")
-        + "</g></g>"
+        f'<g id="standby-banner" opacity=".42">{plate}</g>'
+        '</g>'
     )
 
 
