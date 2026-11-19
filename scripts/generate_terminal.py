@@ -62,6 +62,15 @@ BASE_CSS = (
     "58%{opacity:.02}81%{opacity:.06}86%{opacity:.02}100%{opacity:.03}}"
     "@keyframes caret{0%{opacity:1}50%{opacity:0}100%{opacity:1}}"
     "@keyframes fill{0%{transform:scaleX(0)}6%,80%{transform:scaleX(1)}87%,100%{transform:scaleX(0)}}"
+    "#tv{animation:tv 6.3s steps(1,end) infinite}"
+    "#standby-banner{animation:spike 6.3s steps(1,end) infinite}"
+    "#roll{animation:roll 4.7s linear infinite}"
+    "@keyframes tv{0%{opacity:1;transform:none}11%{opacity:.55}12%{opacity:1}"
+    "46%{opacity:.2;transform:translateX(5px)}47%{opacity:.85;transform:translateX(-3px)}"
+    "48%{opacity:.5;transform:translateX(2px)}49%{opacity:1;transform:none}"
+    "77%{opacity:0}78%{opacity:.7}79%{opacity:1}100%{opacity:1;transform:none}}"
+    "@keyframes spike{0%,46%{opacity:.2}47%{opacity:.42}49%,78%{opacity:.2}79%{opacity:.34}80%,100%{opacity:.2}}"
+    "@keyframes roll{0%{transform:translateY(-60px)}100%{transform:translateY(" + str(HEIGHT) + "px)}}"
 )
 
 
@@ -469,15 +478,46 @@ def diagnostic(width: float, profile: dict | None) -> tuple[str, str]:
                            f'<rect x="6" width="2" height="8" fill="{BG}"/></pattern>')
 
 
+def converge(x0: float, y0: float, x1: float, y1: float, horizontal: bool,
+             spread: float, tip: float, lines: int = 9) -> str:
+    out = []
+    for k in range(lines):
+        f = k / (lines - 1) - 0.5
+        if horizontal:
+            out.append(f"M{x0:.1f} {y0 + f * spread:.1f} L{x1:.1f} {y1 + f * tip:.1f}")
+        else:
+            out.append(f"M{x0 + f * spread:.1f} {y0:.1f} L{x1 + f * tip:.1f} {y1:.1f}")
+    return " ".join(out)
+
+
 def stand_by(width: float) -> str:
     cx, cy = width / 2, (SEC1_Y + SEC2_Y) / 2
-    r_mid, r_in = 170, 96
+    r_main, r_in = 150, 92
+    reach_x, reach_y = width / 2 - 40, 245
+
+    wedges = " ".join([
+        converge(cx - reach_x, cy, cx - r_main - 8, cy, True, 52, 6),
+        converge(cx + reach_x, cy, cx + r_main + 8, cy, True, 52, 6),
+        converge(cx, cy - reach_y, cx, cy - r_main - 8, False, 52, 6),
+        converge(cx, cy + reach_y, cx, cy + r_main + 8, False, 52, 6),
+    ])
+    ticks = []
+    for n, frac in (("20", 0.1), ("30", 0.45), ("40", 0.8)):
+        off = r_main + 8 + (reach_x - r_main - 8) * (1 - frac)
+        for side in (-1, 1):
+            x = cx + side * off
+            ticks.append(label(n, x - run_width(n, 9) / 2, cy - 34, FRAME, size=9))
+
+    corner_pts = [(cx + dx, cy + dy) for dx in (-(width / 2 - 78), width / 2 - 78) for dy in (-118, 118)]
     corners = "".join(
-        f'<circle cx="{cx + dx}" cy="{cy + dy}" r="34" fill="none" stroke="{FRAME}" stroke-width="2"/>'
-        f'<path d="M{cx + dx - 34} {cy + dy} H{cx + dx + 34} M{cx + dx} {cy + dy - 34} V{cy + dy + 34}"'
-        f' stroke="{FRAME}" stroke-width="1"/>'
-        for dx in (-(width / 2 - 90), width / 2 - 110) for dy in (HEIGHT - 120 - cy,)
+        f'<circle cx="{x:.1f}" cy="{y}" r="34" fill="none" stroke="{FRAME}" stroke-width="2"/>'
+        f'<circle cx="{x:.1f}" cy="{y}" r="22" fill="none" stroke="{FRAME}" stroke-width="1"/>'
+        f'<path d="M{x - 34:.1f} {y} H{x + 34:.1f} M{x:.1f} {y - 34} V{y + 34} '
+        f'{converge(x - 30, y, x + 30, y, True, 24, 2, 7)}"'
+        f' stroke="{FRAME}" stroke-width="1" fill="none"/>'
+        for x, y in corner_pts
     )
+
     def star(x: float, y: float, rad: float) -> str:
         pts = []
         for k in range(10):
@@ -486,9 +526,9 @@ def stand_by(width: float) -> str:
             pts.append(f"{x + rr * math.sin(a):.1f} {y - rr * math.cos(a):.1f}")
         return "M" + " L".join(pts) + " Z"
 
-    r_star = (r_in + r_mid) / 2
+    r_star = (r_in + r_main) / 2
     stars = " ".join(
-        star(cx + r_star * math.sin(math.radians(a)), cy - r_star * math.cos(math.radians(a)), 11)
+        star(cx + r_star * math.sin(math.radians(a)), cy - r_star * math.cos(math.radians(a)), 10)
         for a in (i * 360 / 13 for i in range(13))
     )
     stripe_h = r_in * 2 / 9
@@ -505,18 +545,22 @@ def stand_by(width: float) -> str:
     text = "PLEASE STAND BY"
     bw, bh = run_width(text, 30) + 44, 48
     return (
-        '<g id="standby" opacity=".06">'
+        '<g id="tv">'
+        f'<rect id="roll" width="{width}" height="60" fill="url(#rollGrad)" opacity=".07"/>'
+        '<g id="standby" opacity=".07">'
         f'<path d="M0 {cy} H{width} M{cx} 0 V{HEIGHT}" stroke="{FRAME}" stroke-width="1.2"/>'
-        f'<circle cx="{cx}" cy="{cy}" r="{r_mid}" fill="none" stroke="{FRAME}" stroke-width="2"/>'
+        f'<path d="{wedges}" stroke="{FRAME}" stroke-width="1.1" fill="none"/>'
+        f'<circle cx="{cx}" cy="{cy}" r="{r_main}" fill="none" stroke="{FRAME}" stroke-width="3"/>'
         f'<circle cx="{cx}" cy="{cy}" r="{r_in}" fill="none" stroke="{FRAME}" stroke-width="2"/>'
-        f'{corners}'
+        f'<circle cx="{cx}" cy="{cy}" r="14" fill="none" stroke="{FRAME}" stroke-width="1.5"/>'
+        f'{corners}{"".join(ticks)}'
         '</g>'
         + medallion
         + '<g id="standby-banner" opacity=".2">'
         f'<rect x="{cx - bw / 2:.1f}" y="{cy - bh / 2}" width="{bw:.1f}" height="{bh}" rx="6"'
-        f' fill="none" stroke="{FRAME}" stroke-width="3"/>'
+        f' fill="{BG}" fill-opacity=".6" stroke="{FRAME}" stroke-width="3"/>'
         + label(text, cx - run_width(text, 30) / 2, cy + 11, FRAME, size=30, weight="700")
-        + "</g>"
+        + "</g></g>"
     )
 
 
@@ -541,6 +585,7 @@ def render(user: str, profile: dict | None, cal: dict) -> str:
 <filter id="glow" x="-120%" y="-120%" width="340%" height="340%"><feGaussianBlur stdDeviation="1.7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
 <filter id="softglow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="0.9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
 <radialGradient id="vignette" cx=".5" cy=".5" r=".72"><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".7"/></radialGradient>
+<linearGradient id="rollGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{FRAME}" stop-opacity="0"/><stop offset=".5" stop-color="{FRAME}" stop-opacity="1"/><stop offset="1" stop-color="{FRAME}" stop-opacity="0"/></linearGradient>
 <pattern id="scan" width="4" height="3" patternUnits="userSpaceOnUse"><rect width="4" height="1" fill="{FRAME}" opacity=".07"/></pattern>
 <clipPath id="screen"><rect x="3" y="3" width="{width - 6}" height="{HEIGHT - 6}" rx="10"/></clipPath>
 {scan_defs}{diag_defs}</defs>
