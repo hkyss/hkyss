@@ -23,19 +23,18 @@ ROWS = 7
 
 TAB_Y = 30
 TAB_LINE_Y = 38
-SUB_Y = 58
-NAME_Y = 112
-ROLE_Y = 140
-SEC1_Y = 166
-SCAN_HEAD_Y = 188
-MONTH_Y = 208
-GRID_Y = 216
-SCAN_STAT_Y = 332
-SEC2_Y = 346
-DIAG_HEAD_Y = 368
-ROW_Y = 394
+NAME_Y = 92
+ROLE_Y = 120
+SEC1_Y = 146
+SCAN_HEAD_Y = 168
+MONTH_Y = 188
+GRID_Y = 196
+SCAN_STAT_Y = 312
+SEC2_Y = 326
+DIAG_HEAD_Y = 348
+ROW_Y = 374
 ROW_STEP = 21
-HEIGHT = 556
+HEIGHT = 536
 
 BG = "#0a0906"
 FRAME = "#ffb642"
@@ -45,8 +44,7 @@ LEVELS = ["#2b2008", "#6b4708", "#a06a0c", "#d0921a", "#ffb642"]
 FLASH = "#fff6dd"
 SHADE = "#120d04"
 
-TABS = ["STAT", "INV", "DATA", "MAP", "RADIO"]
-SUBTABS = ["STATUS", "SPECIAL", "PERKS"]
+TAB = "STAT"
 
 DURATION = "30s"
 WALK_END = 82.0
@@ -69,7 +67,6 @@ BASE_CSS = (
         "@keyframes flicker{0%{opacity:.02}18%{opacity:.05}23%{opacity:.015}52%{opacity:.045}"
     "58%{opacity:.02}81%{opacity:.06}86%{opacity:.02}100%{opacity:.03}}"
     "@keyframes caret{0%{opacity:1}50%{opacity:0}100%{opacity:1}}"
-    "@keyframes vault{0%,55%{transform:rotate(0)}70%,85%{transform:rotate(30deg)}100%{transform:rotate(0)}}"
     "@keyframes fill{0%{transform:scaleX(0)}6%,80%{transform:scaleX(1)}87%,100%{transform:scaleX(0)}}"
 )
 
@@ -103,38 +100,23 @@ def rule(width: float, y: float) -> str:
             f' fill="{FRAME}" opacity=".35"/>')
 
 
-def heading(width: float, y: float, left: str, tag: str) -> str:
-    return label(left, PAD, y, FRAME, glow=True) + right(tag, width - PAD, y, DIM)
+def heading(width: float, y: float, left: str, tag: str = "") -> str:
+    tail = right(tag, width - PAD, y, DIM) if tag else ""
+    return label(left, PAD, y, FRAME, glow=True) + tail
 
 
 def tab_bar(width: float) -> str:
-    span = width - PAD * 2
-    slot = span / len(TABS)
-    parts = []
-    active_x0 = active_x1 = 0.0
-    for i, name in enumerate(TABS):
-        w = run_width(name, 15)
-        x = PAD + slot * i + (slot - w) / 2
-        if i == 0:
-            active_x0, active_x1 = x - 8, x + w + 8
-            parts.append(label(name, x, TAB_Y, FRAME, size=15, glow=True, weight="700"))
-        else:
-            parts.append(label(name, x, TAB_Y, DIM, size=15))
+    w = run_width(TAB, 15)
+    slot = (width - PAD * 2) / 5
+    x = PAD + (slot - w) / 2
+    x0, x1 = x - 8, x + w + 8
     top = TAB_Y - 15
-    parts.append(
-        f'<path d="M{PAD} {TAB_LINE_Y + 6} V{TAB_LINE_Y} H{active_x0:.1f} V{top}'
-        f' M{active_x1:.1f} {top} V{TAB_LINE_Y} H{width - PAD} V{TAB_LINE_Y + 6}"'
+    return (
+        label(TAB, x, TAB_Y, FRAME, size=15, glow=True, weight="700")
+        + f'<path d="M{PAD} {TAB_LINE_Y + 6} V{TAB_LINE_Y} H{x0:.1f} V{top}'
+        f' M{x1:.1f} {top} V{TAB_LINE_Y} H{width - PAD} V{TAB_LINE_Y + 6}"'
         f' fill="none" stroke="{FRAME}" stroke-width="1.6" filter="url(#softglow)"/>'
     )
-    x = PAD + 6
-    for i, name in enumerate(SUBTABS):
-        fill, opacity = (FRAME, "1") if i == 0 else (DIM, ".8" if i == 1 else ".45")
-        parts.append(f'<g opacity="{opacity}">'
-                     + label(name, x, SUB_Y, fill, size=12, glow=i == 0, weight="700" if i == 0 else "")
-                     + "</g>")
-        x += run_width(name, 12) + 22
-    parts.append(right("PIP-BOY 3000 MK IV", width - PAD, SUB_Y, DIM, size=10))
-    return "".join(parts)
 
 
 def status_bar(width: float, profile: dict | None, cal: dict) -> str:
@@ -319,48 +301,9 @@ def typing_name(name: str, size: float = 44) -> tuple[str, str]:
     return "".join(parts), "".join(css)
 
 
-def identity(width: float, user: str, profile: dict | None) -> tuple[str, str]:
-    name = user.upper()
-    cx, cy, r = width - PAD - 46, NAME_Y - 2, 36
-    vault = f"{profile['repositories']['totalCount']:03d}" if profile else "000"
-
-    teeth = []
-    for i in range(12):
-        a = i * 30
-        for ang, rad in ((a - 10, r - 1), (a - 6, r + 5), (a + 6, r + 5), (a + 10, r - 1)):
-            t = math.radians(ang)
-            teeth.append(f"{cx + rad * math.sin(t):.2f} {cy - rad * math.cos(t):.2f}")
-    bolts = "".join(
-        f'<circle cx="{cx + (r - 7) * math.sin(math.radians(a)):.2f}"'
-        f' cy="{cy - (r - 7) * math.cos(math.radians(a)):.2f}" r="1.5" fill="{FRAME}" opacity=".8"/>'
-        for a in range(15, 360, 30)
-    )
-    piston_y = cy + r * 0.45
-    emblem = (
-        f'<circle cx="{cx}" cy="{cy}" r="{r + 10}" fill="none" stroke="{FRAME}"'
-        f' stroke-width="1.2" opacity=".45"/>'
-        f'<circle cx="{cx}" cy="{cy}" r="{r + 6.5}" fill="#050402" stroke="{FRAME}"'
-        f' stroke-width="4" opacity=".55" stroke-opacity=".18"/>'
-        f'<rect x="{cx - r - 30}" y="{piston_y - 4:.1f}" width="16" height="8" rx="1.5" fill="{SHADE}"'
-        f' stroke="{FRAME}" stroke-width="1.2"/>'
-        f'<rect x="{cx - r - 14}" y="{piston_y - 1.5:.1f}" width="10" height="3" fill="{FRAME}" opacity=".8"/>'
-        f'<g id="cog">'
-        f'<path d="M{" L".join(teeth)} Z" fill="{SHADE}" stroke="{FRAME}" stroke-width="1.4"'
-        f' stroke-linejoin="round"/>'
-        f'<circle cx="{cx}" cy="{cy}" r="{r - 2}" fill="{SHADE}" stroke="{FRAME}" stroke-width="1.6"/>'
-        f'{bolts}'
-        f'<circle cx="{cx}" cy="{cy}" r="{r - 12}" fill="{FRAME}" fill-opacity=".08" stroke="{FRAME}"'
-        f' stroke-width="1.2" opacity=".85"/></g>'
-        + label(vault, cx - run_width(vault, 16) / 2, cy + 6, FRAME, size=16, glow=True, weight="700")
-    )
-
-    typed, typed_css = typing_name(name)
-    body = (
-        typed
-        + label("> ROLE: DEVELOPER", PAD, ROLE_Y, DIM, size=12)
-        + emblem
-    )
-    return body, typed_css + f"#cog{{animation:vault 14s ease-in-out infinite;transform-origin:{cx}px {cy}px}}"
+def identity(user: str) -> tuple[str, str]:
+    typed, typed_css = typing_name(user.upper())
+    return typed + label("> ROLE: DEVELOPER", PAD, ROLE_Y, DIM, size=12), typed_css
 
 
 def archive(width: float, cal: dict) -> tuple[str, str, str]:
@@ -474,8 +417,6 @@ def archive(width: float, cal: dict) -> tuple[str, str, str]:
     )
 
     dates = sorted(d["date"] for d in days)
-    total = f"{cal['total']:,}".replace(",", " ") if cal["total"] else "--"
-    logged = sum(1 for d in days if d["level"] > 0)
     current, longest = streaks(days)
 
     body = (
@@ -485,7 +426,6 @@ def archive(width: float, cal: dict) -> tuple[str, str, str]:
         + f'<rect id="beam" x="{grid_x - 4}" y="{GRID_Y - 4}" width="{grid_w + 8}" height="26"'
         + f' fill="url(#beamGrad)" opacity=".16"/></g>'
         + hero
-        + label(f"> {total} ENTRIES / {logged} ACTIVE DAYS", PAD, SCAN_STAT_Y, DIM)
         + right(f"STREAK {current} :: MAX {longest}", width - PAD, SCAN_STAT_Y, FRAME)
     )
     defs = (
@@ -522,7 +462,7 @@ def diagnostic(width: float, profile: dict | None) -> tuple[str, str]:
         langs = []
 
     rows = [
-        heading(width, DIAG_HEAD_Y, "> SYSTEM DIAGNOSTIC", "V.A.T.S. READOUT"),
+        heading(width, DIAG_HEAD_Y, "> SYSTEM DIAGNOSTIC"),
         f'<rect x="{mid}" y="{DIAG_HEAD_Y + 12}" width="1" height="{ROW_STEP * 6 + 12}"'
         f' fill="{FRAME}" opacity=".25"/>',
     ]
@@ -617,7 +557,7 @@ def render(user: str, profile: dict | None, cal: dict) -> str:
     cols = max(d["col"] for d in cal["days"]) + 1
     width = cols * PITCH - GAP + PAD * 2
 
-    ident_body, ident_css = identity(width, user, profile)
+    ident_body, ident_css = identity(user)
     scan_body, scan_css, scan_defs = archive(width, cal)
     diag_body, diag_defs = diagnostic(width, profile)
 
